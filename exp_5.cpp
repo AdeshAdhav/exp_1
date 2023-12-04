@@ -2,54 +2,93 @@
 
 #include <iostream>
 
-class ExamResults {
-private:
-    int passedCount = 0;
-    int failedCount = 0;
+using namespace std;
+
+class Person {
+protected:
+  string name;
+  int age;
 
 public:
-    void enterTestResult(int result) {
-        if (result == 1) {
-            passedCount++;
-        } else if (result == 2) {
-            failedCount++;
-        } else {
-            std::cout << "Invalid input: Result must be 1 (passed) or 2 (failed)." << std::endl;
-        }
-    }
+  void setName(string name) {
+    this->name = name;
+  }
 
-    void displaySummary() {
-        std::cout << "Summary of Exam Results:" << std::endl;
-        std::cout << "Number of students who passed: " << passedCount << std::endl;
-        std::cout << "Number of students who failed: " << failedCount << std::endl;
+  string getName() {
+    return name;
+  }
 
-        if (passedCount > 8) {
-            std::cout << "Raise tuition." << std::endl;
-        }
-    }
+  void setAge(int age) {
+    this->age = age;
+  }
+
+  int getAge() {
+    return age;
+  }
+};
+
+class Employee : public Person {
+private:
+  float salary;
+
+public:
+  void setSalary(float salary) {
+    this->salary = salary;
+  }
+
+  float getSalary() {
+    return salary;
+  }
+
+  void display() {
+    cout << "Name: " << getName() << endl;
+    cout << "Age: " << getAge() << endl;
+    cout << "Salary: " << getSalary() << endl;
+  }
 };
 
 int main() {
-    ExamResults results;
+  Employee employees[5];
 
-    for (int i = 0; i < 10; i++) {
-        int result;
-        std::cout << "Enter result (1 for passed, 2 for failed): ";
-        std::cin >> result;
-        results.enterTestResult(result);
-    }
+  for (int i = 0; i < 5; i++) {
+    string name;
+    int age;
+    float salary;
 
-    results.displaySummary();
+    cout << "Enter name for employee " << i + 1 << ": ";
+    cin >> name;
 
-    return 0;
+    cout << "Enter age for employee " << i + 1 << ": ";
+    cin >> age;
+
+    cout << "Enter salary for employee " << i + 1 << ": ";
+    cin >> salary;
+
+    employees[i].setName(name);
+    employees[i].setAge(age);
+    employees[i].setSalary(salary);
+  }
+
+  cout << endl << "Employee Information:" << endl;
+
+  for (int i = 0; i < 5; i++) {
+    employees[i].display();
+    cout << endl;
+  }
+
+  return 0;
 }
+
 //using exception handling
+
 #include <iostream>
 #include <exception>
 
-class InvalidResultException : public exception {
+using namespace std;
+
+class InvalidInputException : public exception {
 public:
-    InvalidResultException(const string& message) : message(message) {}
+    InvalidInputException(const string& message) : message(message) {}
 
     const string& getMessage() const {
         return message;
@@ -59,193 +98,199 @@ private:
     string message;
 };
 
-class ExamResults {
+class Employee {
 private:
-    int passedCount = 0;
-    int failedCount = 0;
+    string name;
+    int age;
+    float salary;
 
 public:
-    void enterTestResult(int result) {
-        if (result == 1) {
-            passedCount++;
-        } else if (result == 2) {
-            failedCount++;
-        } else {
-            throw InvalidResultException("Invalid input: Result must be 1 (passed) or 2 (failed).");
+    Employee(string name, int age, float salary) {
+        if (name.empty()) {
+            throw InvalidInputException("Invalid input: Name cannot be empty");
         }
+
+        if (age <= 0) {
+            throw InvalidInputException("Invalid input: Age must be positive");
+        }
+
+        if (salary < 0.0f) {
+            throw InvalidInputException("Invalid input: Salary must be non-negative");
+        }
+
+        this->name = name;
+        this->age = age;
+        this->salary = salary;
     }
 
-    void displaySummary() {
-        std::cout << "Summary of Exam Results:" << std::endl;
-        std::cout << "Number of students who passed: " << passedCount << std::endl;
-        std::cout << "Number of students who failed: " << failedCount << std::endl;
-
-        if (passedCount > 8) {
-            std::cout << "Raise tuition." << std::endl;
-        }
+    void display() {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "Salary: " << salary << endl;
     }
 };
 
 int main() {
-    ExamResults results;
+    try {
+        Employee employees[5];
 
-    for (int i = 0; i < 10; i++) {
-        int result;
-        std::cout << "Enter result (1 for passed, 2 for failed): ";
-        try {
-            std::cin >> result;
-            results.enterTestResult(result);
-        } catch (InvalidResultException& e) {
-            std::cerr << "Error: " << e.getMessage() << std::endl;
-            
-// using virtual function
+        for (int i = 0; i < 5; i++) {
+            string name;
+            int age;
+            float salary;
 
+            cout << "Enter name for employee " << i + 1 << ": ";
+            getline(cin, name);
 
-#include <iostream>
+            cout << "Enter age for employee " << i + 1 << ": ";
+            cin >> age;
 
-class ExamResultAnalyzer {
-public:
-    virtual void enterTestResult(int result) = 0;
-    virtual void displaySummary() = 0;
-};
+            cout << "Enter salary for employee " << i + 1 << ": ";
+            cin >> salary;
 
-class InteractiveExamResultAnalyzer : public ExamResultAnalyzer {
-private:
-    int passedCount = 0;
-    int failedCount = 0;
-
-public:
-    void enterTestResult(int result) override {
-        if (result == 1) {
-            passedCount++;
-        } else if (result == 2) {
-            failedCount++;
-        } else {
-            std::cout << "Invalid input: Result must be 1 (passed) or 2 (failed)." << std::endl;
+            employees[i] = Employee(name, age, salary);
         }
-    }
 
-    void displaySummary() override {
-        std::cout << "Summary of Exam Results:" << std::endl;
-        std::cout << "Number of students who passed: " << passedCount << std::endl;
-        std::cout << "Number of students who failed: " << failedCount << std::endl;
+        cout << endl << "Employee Information:" << endl;
 
-        if (passedCount > 8) {
-            std::cout << "Raise tuition." << std::endl;
+        for (int i = 0; i < 5; i++) {
+            employees[i].display();
+            cout << endl;
         }
+    } catch (InvalidInputException& e) {
+        cerr << "Error: " << e.getMessage() << endl;
     }
-};
-
-int main() {
-    InteractiveExamResultAnalyzer analyzer;
-
-    for (int i = 0; i < 10; i++) {
-        int result;
-        std::cout << "Enter result (1 for passed, 2 for failed): ";
-        std::cin >> result;
-        analyzer.enterTestResult(result);
-    }
-
-    analyzer.displaySummary();
 
     return 0;
 }
 
-//using virtual function
-
+//using virtual function 
 #include <iostream>
 
-class ExamResultAnalyzer {
-public:
-    virtual void enterTestResult(int result) = 0;
-    virtual void displaySummary() = 0;
-};
-
-class InteractiveExamResultAnalyzer : public ExamResultAnalyzer {
-private:
-    int passedCount = 0;
-    int failedCount = 0;
+class Person {
+protected:
+    string name;
+    int age;
 
 public:
-    void enterTestResult(int result) override {
-        if (result == 1) {
-            passedCount++;
-        } else if (result == 2) {
-            failedCount++;
-        } else {
-            std::cout << "Invalid input: Result must be 1 (passed) or 2 (failed)." << std::endl;
-        }
+    void setName(string name) {
+        this->name = name;
     }
 
-    void displaySummary() override {
-        std::cout << "Summary of Exam Results:" << std::endl;
-        std::cout << "Number of students who passed: " << passedCount << std::endl;
-        std::cout << "Number of students who failed: " << failedCount << std::endl;
+    string getName() {
+        return name;
+    }
 
-        if (passedCount > 8) {
-            std::cout << "Raise tuition." << std::endl;
-        }
+    void setAge(int age) {
+        this->age = age;
+    }
+
+    int getAge() {
+        return age;
+    }
+
+    virtual void display() = 0;
+};
+
+class Employee : public Person {
+private:
+    float salary;
+
+public:
+    void setSalary(float salary) {
+        this->salary = salary;
+    }
+
+    float getSalary() {
+        return salary;
+    }
+
+    virtual void display() override {
+        cout << "Name: " << getName() << endl;
+        cout << "Age: " << getAge() << endl;
+        cout << "Salary: " << getSalary() << endl;
     }
 };
 
 int main() {
-    InteractiveExamResultAnalyzer analyzer;
+    Employee employees[5];
 
-    for (int i = 0; i < 10; i++) {
-        int result;
-        std::cout << "Enter result (1 for passed, 2 for failed): ";
-        std::cin >> result;
-        analyzer.enterTestResult(result);
+    for (int i = 0; i < 5; i++) {
+        string name;
+        int age;
+        float salary;
+
+        cout << "Enter name for employee " << i + 1 << ": ";
+        cin >> name;
+
+        cout << "Enter age for employee " << i + 1 << ": ";
+        cin >> age;
+
+        cout << "Enter salary for employee " << i + 1 << ": ";
+        cin >> salary;
+
+        employees[i] = Employee();
+        employees[i].setName(name);
+        employees[i].setAge(age);
+        employees[i].setSalary(salary);
     }
 
-    analyzer.displaySummary();
+    cout << endl << "Employee Information:" << endl;
+
+    for (int i = 0; i < 5; i++) {
+        employees[i].display();
+        cout << endl;
+    }
 
     return 0;
 }
+
 //using friend function
-
 #include <iostream>
 
-class ExamResultAnalyzer {
+class Employee {
 private:
-    int passedCount = 0;
-    int failedCount = 0;
+    string name;
+    int age;
+    float salary;
+
+friend void enterEmployeeDetails(Employee& employee);
+friend void displayEmployeeDetails(const Employee& employee);
 
 public:
-    void enterTestResult(int result) {
-        if (result == 1) {
-            passedCount++;
-        } else if (result == 2) {
-            failedCount++;
-        } else {
-            std::cout << "Invalid input: Result must be 1 (passed) or 2 (failed)." << std::endl;
-        }
-    }
-
-    friend void displaySummary(const ExamResultAnalyzer& analyzer);
+    Employee() {}
 };
 
-void displaySummary(const ExamResultAnalyzer& analyzer) {
-    std::cout << "Summary of Exam Results:" << std::endl;
-    std::cout << "Number of students who passed: " << analyzer.passedCount << std::endl;
-    std::cout << "Number of students who failed: " << analyzer.failedCount << std::endl;
+void enterEmployeeDetails(Employee& employee) {
+    cout << "Enter name: ";
+    cin >> employee.name;
 
-    if (analyzer.passedCount > 8) {
-        std::cout << "Raise tuition." << std::endl;
-    }
+    cout << "Enter age: ";
+    cin >> employee.age;
+
+    cout << "Enter salary: ";
+    cin >> employee.salary;
+}
+
+void displayEmployeeDetails(const Employee& employee) {
+    cout << "Name: " << employee.name << endl;
+    cout << "Age: " << employee.age << endl;
+    cout << "Salary: " << employee.salary << endl;
 }
 
 int main() {
-    ExamResultAnalyzer analyzer;
+    Employee employees[5];
 
-    for (int i = 0; i < 10; i++) {
-        int result;
-        std::cout << "Enter result (1 for passed, 2 for failed): ";
-        std::cin >> result;
-        analyzer.enterTestResult(result);
+    for (int i = 0; i < 5; i++) {
+        enterEmployeeDetails(employees[i]);
     }
 
-    displaySummary(analyzer);
+    cout << endl << "Employee Information:" << endl;
+
+    for (int i = 0; i < 5; i++) {
+        displayEmployeeDetails(employees[i]);
+        cout << endl;
+    }
 
     return 0;
 }
